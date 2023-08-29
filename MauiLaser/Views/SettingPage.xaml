@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiLaser.Views.SettingPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:cvt="clr-namespace:MauiLaser.Converters"
+    xmlns:vms="clr-namespace:MauiLaser.ViewModels"
+    Title="SettingPage">
+    <ContentPage.BindingContext>
+        <vms:SettingPageViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <cvt:FilePath2NameConverter x:Key="filePath2NameConverter" />
+    </ContentPage.Resources>
+    <ScrollView>
+        <VerticalStackLayout Padding="5">
+            <VerticalStackLayout>
+                <HorizontalStackLayout Margin="5">
+                    <Label Text="Onnx路径：" />
+                    <Editor IsReadOnly="True" Text="{Binding Config.OnnxFilePath, Converter={StaticResource filePath2NameConverter}, Mode=OneWay}" />
+                </HorizontalStackLayout>
+                <Button
+                    Command="{Binding SelectParamsCommand}"
+                    CommandParameter="onnx"
+                    HorizontalOptions="Fill"
+                    Text="选择" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout>
+                <HorizontalStackLayout Margin="5">
+                    <Label Text="分类配置：" />
+                    <Editor IsReadOnly="True" Text="{Binding Config.ClsFilePath, Converter={StaticResource filePath2NameConverter}, Mode=OneWay}" />
+
+                </HorizontalStackLayout>
+                <Button
+                    Command="{Binding SelectParamsCommand}"
+                    CommandParameter="clsFile"
+                    HorizontalOptions="Fill"
+                    Text="选择" />
+            </VerticalStackLayout>
+
+            <HorizontalStackLayout Margin="5">
+                <Label Text="检测阈值：" />
+                <Entry Text="{Binding Config.Confidence, FallbackValue=0.45}" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Margin="5">
+                <Label Text="服务器Ip：" />
+                <Entry Text="{Binding Config.Ip}" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Margin="5">
+                <Label Text="服务器端口：" />
+                <Entry Text="{Binding Config.Port}" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Margin="5">
+                <Label Text="Rstp：" />
+                <Entry Text="{Binding Config.RtspAddress}" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Margin="5">
+                <Label Text="Http：" />
+                <Entry Text="{Binding Config.HttpAddress}" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Margin="5">
+                <Label Text="选择模型：" />
+                <Picker ItemsSource="{Binding YoloModels}" SelectedItem="{Binding Config.SelectYoloModel}" />
+            </HorizontalStackLayout>
+            <Button
+                Command="{Binding SaveDeviceConfigCommand}"
+                HorizontalOptions="Fill"
+                Text="保存配置" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

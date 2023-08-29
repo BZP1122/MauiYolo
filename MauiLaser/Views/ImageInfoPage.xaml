@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiLaser.Views.ImageInfoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:com="clr-namespace:MauiLaser.Views.Common"
+    xmlns:cv="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:vms="clr-namespace:MauiLaser.ViewModels"
+    Title="Defect">
+    <ContentPage.BindingContext>
+        <vms:TaskPageViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="0,1" />
+            </Style>
+            <Style TargetType="Border">
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="Stroke" Value="GreenYellow" />
+            </Style>
+            <toolkit:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ScrollView>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                <HorizontalStackLayout Margin="5" HorizontalOptions="Center">
+                    <Label Text="Select a camera:" VerticalOptions="Center" />
+                    <Picker
+                        ItemsSource="{Binding Cameras}"
+                        SelectedItem="{Binding Camera, Mode=TwoWay}"
+                        VerticalOptions="Center" />
+                </HorizontalStackLayout>
+                <HorizontalStackLayout Margin="5" HorizontalOptions="Center">
+                    <Label Text="Select a microphone:" VerticalOptions="Center" />
+                    <Picker
+                        ItemsSource="{Binding Microphones}"
+                        SelectedItem="{Binding Microphone, Mode=TwoWay}"
+                        VerticalOptions="Center" />
+                </HorizontalStackLayout>
+                <HorizontalStackLayout HorizontalOptions="Center">
+                    <Label Text="Mirrored" VerticalOptions="Center" />
+                    <CheckBox
+                        BindingContext="{x:Reference cameraView}"
+                        IsChecked="{Binding MirroredImage}"
+                        VerticalOptions="Center" />
+                    <Label Text="Torch" VerticalOptions="Center" />
+                    <CheckBox
+                        BindingContext="{x:Reference cameraView}"
+                        IsChecked="{Binding TorchEnabled}"
+                        VerticalOptions="Center" />
+                    <Label Text="QR Detec." VerticalOptions="Center" />
+                    <CheckBox
+                        BindingContext="{x:Reference cameraView}"
+                        IsChecked="{Binding BarCodeDetectionEnabled}"
+                        VerticalOptions="Center" />
+                    <Label Text="obj Detec." VerticalOptions="Center" />
+                    <CheckBox IsChecked="{Binding IsDefectYolo}" VerticalOptions="Center" />
+                </HorizontalStackLayout>
+                <HorizontalStackLayout HorizontalOptions="Center">
+                    <Label Text="AutoSnap freq: " VerticalOptions="Center" />
+                    <Entry
+                        Keyboard="Numeric"
+                        Text="{Binding SnapshotSeconds, Mode=TwoWay}"
+                        WidthRequest="20" />
+                    <Label Text="Take Autosnap" VerticalOptions="Center" />
+                    <CheckBox IsChecked="{Binding TakeSnapshot, Mode=OneWayToSource}" VerticalOptions="Center" />
+                    <Label Text="As ISource" VerticalOptions="Center" />
+                    <CheckBox
+                        BindingContext="{x:Reference cameraView}"
+                        IsChecked="{Binding AutoSnapShotAsImageSource}"
+                        VerticalOptions="Center" />
+                </HorizontalStackLayout>
+                <HorizontalStackLayout
+                    Margin="2"
+                    HorizontalOptions="Center"
+                    Spacing="2">
+                    <Label Text="Zoom" VerticalOptions="Center" />
+                    <Stepper
+                        BindingContext="{x:Reference cameraView}"
+                        Increment="0.5"
+                        Maximum="7"
+                        Minimum="{Binding MinZoomFactor}"
+                        Value="{Binding ZoomFactor, Mode=TwoWay}" />
+                </HorizontalStackLayout>
+                <toolkit:UniformItemsLayout>
+                    <Button Command="{Binding StartCameraCommand}" Text="Start Camera" />
+                    <Button Command="{Binding StopCameraCommand}" Text="Stop Camera" />
+                    <Button Command="{Binding SelectedModelCommand}" Text="ReLoad Model" />
+                    <Button Command="{Binding SelectedImageCommand}" Text="Select Image" />
+                    <Button Command="{Binding DefectImageCommand}" Text="Predict" />
+                    <Button Command="{Binding ScreenShotCommand}" Text="SnapShot" />
+                    <Button Command="{Binding StartRecordingCommand}" Text="Start Record" />
+                    <Button Command="{Binding StopRecordingCommand}" Text="Stop Record" />
+                    <Button Command="{Binding OpenRtspCommand}" Text="Rstp" />
+                    <Button Command="{Binding OpenRtspCancelCommand}" Text="Stop Rstp" />
+                    <Button Command="{Binding SendEmailCommand}" Text="SendEmail" />
+                    <Button Command="{Binding OpenTcpClientCommand}" Text="Tcp" />
+                </toolkit:UniformItemsLayout>
+            </VerticalStackLayout>
+            <Border Grid.Row="1" IsVisible="true">
+                <cv:CameraView
+         
+                    x:Name="cameraView"
+                    AutoRecordingFile="{Binding RecordingFile}"
+                    AutoSnapShotAsImageSource="True"
+                    AutoSnapShotFormat="PNG"
+                    AutoSnapShotSeconds="{Binding SnapshotSeconds}"
+                    AutoStartPreview="{Binding AutoStartPreview}"
+                    AutoStartRecording="{Binding AutoStartRecording}"
+                    BarCodeOptions="{Binding BarCodeOptions}"
+                    BarCodeResults="{Binding BarCodeResults, Mode=OneWayToSource}"
+                    Camera="{Binding Camera}"
+                    Cameras="{Binding Cameras, Mode=OneWayToSource}"
+                    HeightRequest="400"
+                    Microphone="{Binding Microphone}"
+                    Microphones="{Binding Microphones, Mode=OneWayToSource}"
+                    NumCamerasDetected="{Binding NumCameras, Mode=OneWayToSource}"
+                    NumMicrophonesDetected="{Binding NumMicrophones, Mode=OneWayToSource}"
+                    SnapShot="{Binding SnapImage}"
+                    TakeAutoSnapShot="{Binding TakeSnapshot}"
+                    WidthRequest="400" />
+                <!--<Image Source="{Binding ImageDefect}" />-->
+            </Border>
+            <VerticalStackLayout Grid.Row="2" VerticalOptions="Center">
+                <Label
+                    FontAttributes="Bold"
+                    HorizontalOptions="Center"
+                    Text="{Binding BarcodeText}" />
+                <Border>
+                    <com:PinchToZoomContainer>
+                        <Image
+                            HeightRequest="300"
+                            Source="{Binding ImageDefect}"
+                            WidthRequest="400" />
+                    </com:PinchToZoomContainer>
+                </Border>
+                <!--<Border>
+                    <toolkit:MediaElement
+                        Background="gray"
+                        HeightRequest="300"
+                        ShouldAutoPlay="False"
+                        ShouldShowPlaybackControls="True"
+                        Source="{Binding VideoSource}"
+                        WidthRequest="400" />
+                </Border>-->
+
+                <ListView ItemsSource="{Binding Predictions}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label>
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0}-Score :{1:f3} - Area:{2}">
+                                                <Binding Path="Label.Name" />
+                                                <Binding Path="Score" />
+                                                <Binding Path="Area" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                </StackLayout>
+                            </ViewCell>
+
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </VerticalStackLayout>
+            <ActivityIndicator
+                Grid.RowSpan="3"
+                HorizontalOptions="Center"
+                IsRunning="{Binding IsDownloadingImage}"
+                IsVisible="{Binding IsDownloadingImage}"
+                VerticalOptions="Center"
+                Color="GreenYellow" />
+        </Grid>
+    </ScrollView>
+</ContentPage>
